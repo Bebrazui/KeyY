@@ -34,7 +34,8 @@ export const I18N = {
         'hint_mods': 'UP/DOWN to select, ENTER/SPACE to toggle, ESC to back',
         'exit_question': 'Вы уверены что хотите выйти?',
         'yes': 'Да (Enter)',
-        'no': 'Нет (Esc)'
+        'no': 'Нет (Esc)',
+        'back': 'Back'
     },
     'ru': {
         'menu_title': 'Ритм',
@@ -64,7 +65,8 @@ export const I18N = {
         'hint_mods': 'UP/DOWN выбор, ENTER/SPACE переключить, ESC назад',
         'exit_question': 'Вы уверены что хотите выйти?',
         'yes': 'Да (Enter)',
-        'no': 'Нет (Esc)'
+        'no': 'Нет (Esc)',
+        'back': 'Назад'
     }
 };
 
@@ -124,21 +126,64 @@ export class CanvasMenu {
         }
 
         this.fadeAlpha = 0.0;
+        this.isInputActive = false;
+        this.isLoadingLevel = false;
+        this.scrollOffset = 0;
+        this.pointerStartX = 0;
+        this.pointerStartY = 0;
+        this.isDragging = false;
+        this.lastPointerTime = 0;
 
         this.boundOnKeyDown = this.onKeyDown.bind(this);
         this.boundOnMouseMove = this.onMouseMove.bind(this);
-        this.boundOnMouseDown = this.onMouseDown.bind(this);
+        this.boundOnMouseDown = (e) => {
+            if (performance.now() - this.lastPointerTime < 400) return;
+            this.onMouseDown(e);
+        };
         this.boundOnWheel = this.onWheel.bind(this);
         this.boundOnPointerDown = (e) => {
             if (e.pointerType === 'mouse' && e.button !== 0) return;
-            if (e.cancelable) e.preventDefault();
+            this.lastPointerTime = performance.now();
+            this.pointerStartX = e.clientX;
+            this.pointerStartY = e.clientY;
+            this.dragStartScrollOffset = this.scrollOffset || 0;
+            this.isDragging = false;
             this.audio.init();
-            const fakeE = {
-                button: 0,
-                clientX: e.clientX,
-                clientY: e.clientY
-            };
-            this.onMouseDown(fakeE);
+        };
+        this.boundOnPointerMove = (e) => {
+            const pos = this.getCanvasPos(e);
+            this.mouseX = pos.x;
+            this.mouseY = pos.y;
+
+            if (this.pointerStartY !== 0) {
+                const dy = e.clientY - this.pointerStartY;
+                if (Math.abs(dy) > 12) {
+                    this.isDragging = true;
+                    if (this.screenState === 'levels') {
+                        const step = 48;
+                        const visibleCount = Math.floor((720 - 160 - 70) / 56);
+                        const maxScroll = Math.max(0, this.levelFiles.length - visibleCount);
+                        const deltaIdx = Math.round(-dy / step);
+                        this.scrollOffset = Math.max(0, Math.min(maxScroll, (this.dragStartScrollOffset || 0) + deltaIdx));
+                    }
+                }
+            }
+        };
+        this.boundOnPointerUp = (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            const wasDragging = this.isDragging;
+            this.pointerStartY = 0;
+            this.pointerStartX = 0;
+            this.isDragging = false;
+
+            if (!wasDragging) {
+                const fakeE = {
+                    button: 0,
+                    clientX: e.clientX,
+                    clientY: e.clientY
+                };
+                this.onMouseDown(fakeE);
+            }
         };
 
         this.initInput();
@@ -191,28 +236,42 @@ export class CanvasMenu {
     }
 
     initInput() {
+        if (this.isInputActive) return;
+        this.isInputActive = true;
         window.addEventListener('keydown', this.boundOnKeyDown);
-        window.addEventListener('mousemove', this.boundOnMouseMove);
-        window.addEventListener('mousedown', this.boundOnMouseDown);
-        window.addEventListener('wheel', this.boundOnWheel, { passive: false });
+        this.canvas.addEventListener('mousemove', this.boundOnMouseMove);
+        this.canvas.addEventListener('mousedown', this.boundOnMouseDown);
+        this.canvas.addEventListener('wheel', this.boundOnWheel, { passive: false });
         this.canvas.addEventListener('pointerdown', this.boundOnPointerDown);
+        this.canvas.addEventListener('pointermove', this.boundOnPointerMove);
+        this.canvas.addEventListener('pointerup', this.boundOnPointerUp);
+        this.canvas.addEventListener('pointercancel', this.boundOnPointerUp);
     }
 
     destroyInput() {
+        if (!this.isInputActive) return;
+        this.isInputActive = false;
         window.removeEventListener('keydown', this.boundOnKeyDown);
-        window.removeEventListener('mousemove', this.boundOnMouseMove);
-        window.removeEventListener('mousedown', this.boundOnMouseDown);
-        window.removeEventListener('wheel', this.boundOnWheel);
+        this.canvas.removeEventListener('mousemove', this.boundOnMouseMove);
+        this.canvas.removeEventListener('mousedown', this.boundOnMouseDown);
+        this.canvas.removeEventListener('wheel', this.boundOnWheel);
         this.canvas.removeEventListener('pointerdown', this.boundOnPointerDown);
+        this.canvas.removeEventListener('pointermove', this.boundOnPointerMove);
+        this.canvas.removeEventListener('pointerup', this.boundOnPointerUp);
+        this.canvas.removeEventListener('pointercancel', this.boundOnPointerUp);
+        this.pointerStartY = 0;
+        this.isDragging = false;
     }
 
     getCanvasPos(e) {
         const rect = this.canvas.getBoundingClientRect();
-        const clientX = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
-        const clientY = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
-        const px = (clientX - rect.left) * (this.canvas.width / rect.width);
-        const py = (clientY - rect.top) * (this.canvas.height / rect.height);
-        const scale = this.canvas.height / 720;
+        const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0);
+        const clientY = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0);
+        const rw = rect.width || 1;
+        const rh = rect.height || 1;
+        const px = (clientX - rect.left) * (this.canvas.width / rw);
+        const py = (clientY - rect.top) * (this.canvas.height / rh);
+        const scale = (this.canvas.height / 720) || 1;
         return {
             x: px / scale,
             y: py / scale
@@ -228,10 +287,12 @@ export class CanvasMenu {
     onWheel(e) {
         if (this.screenState === 'levels') {
             e.preventDefault();
+            const visibleCount = Math.floor((720 - 160 - 70) / 56);
+            const maxScroll = Math.max(0, this.levelFiles.length - visibleCount);
             if (e.deltaY > 0) {
-                this.selected = Math.min(this.levelFiles.length - 1, this.selected + 1);
+                this.scrollOffset = Math.min(maxScroll, (this.scrollOffset || 0) + 1);
             } else {
-                this.selected = Math.max(0, this.selected - 1);
+                this.scrollOffset = Math.max(0, (this.scrollOffset || 0) - 1);
             }
         } else if (this.screenState === 'settings') {
             e.preventDefault();
@@ -240,6 +301,17 @@ export class CanvasMenu {
             } else {
                 this.settingsIdx = Math.max(0, this.settingsIdx - 1);
             }
+        }
+    }
+
+    keepSelectedVisible() {
+        const visibleCount = Math.floor((720 - 160 - 70) / 56);
+        const maxScroll = Math.max(0, this.levelFiles.length - visibleCount);
+        if (!this.scrollOffset) this.scrollOffset = 0;
+        if (this.selected < this.scrollOffset) {
+            this.scrollOffset = this.selected;
+        } else if (this.selected >= this.scrollOffset + visibleCount) {
+            this.scrollOffset = Math.min(maxScroll, this.selected - visibleCount + 1);
         }
     }
 
@@ -283,9 +355,11 @@ export class CanvasMenu {
                 this.selected = 0;
             } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'KeyS' || e.key === 'ы' || e.key === 'Ы') {
                 this.selected = (this.selected + 1) % this.levelFiles.length;
+                this.keepSelectedVisible();
                 this.audio.playSfx('hit');
             } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'KeyW' || e.key === 'ц' || e.key === 'Ц') {
                 this.selected = (this.selected - 1 + this.levelFiles.length) % this.levelFiles.length;
+                this.keepSelectedVisible();
                 this.audio.playSfx('hit');
             } else if (e.key === 'Enter' || e.key === 'Space') {
                 this.playSelectedLevel();
@@ -314,6 +388,8 @@ export class CanvasMenu {
     }
 
     onMouseDown(e) {
+        if (!this.isInputActive) return;
+        if (this.isLoadingLevel) return;
         if (e.button !== undefined && e.button !== 0) return;
         this.audio.init();
 
@@ -323,6 +399,15 @@ export class CanvasMenu {
         const pos = this.getCanvasPos(e);
         const mx = pos.x;
         const my = pos.y;
+
+        // Back button on sub-screens (levels, settings, mods)
+        if (this.screenState === 'levels' || this.screenState === 'settings' || this.screenState === 'mods') {
+            if (this.isInsideRect(mx, my, 25, 20, 130, 50)) {
+                this.audio.playSfx('hit');
+                this.screenState = 'menu';
+                return;
+            }
+        }
 
         // 1. Exit Dialog
         if (this.screenState === 'exit_dialog') {
@@ -340,17 +425,17 @@ export class CanvasMenu {
             return;
         }
 
-        // 2. Main Menu Click (exact button bounds)
+        // 2. Main Menu Click (exact button bounds, responsive width)
         if (this.screenState === 'menu') {
             const startY = 195;
             const gap = 82;
-            const bw = 380;
+            const bw = Math.min(380, w - 40);
             const bh = 58;
 
             for (let i = 0; i < 5; i++) {
                 const cx = w / 2;
                 const cy = startY + i * gap;
-                if (this.isInsideRect(mx, my, cx - bw/2 - 15, cy - bh/2 - 10, bw + 30, bh + 20)) {
+                if (this.isInsideRect(mx, my, cx - bw/2 - 20, cy - bh/2 - 12, bw + 40, bh + 24)) {
                     this.selected = i;
                     this.activateMenuItem(i);
                     return;
@@ -359,21 +444,21 @@ export class CanvasMenu {
             return;
         }
 
-        // 3. Level Select Click
+        // 3. Level Select Click (stable scrollOffset, large touch hit target, loading guard)
         if (this.screenState === 'levels') {
-            const startY = 190;
-            const gap = 58;
-            const bw = 520;
-            const bh = 48;
-            const visibleCount = Math.floor((h - startY - 80) / gap);
-
-            const topIndex = Math.max(0, Math.min(this.selected - Math.floor(visibleCount / 2), this.levelFiles.length - visibleCount));
+            const startY = 160;
+            const gap = 56;
+            const bw = Math.min(540, w - 30);
+            const bh = 50;
+            const visibleCount = Math.floor((h - startY - 70) / gap);
+            const maxScroll = Math.max(0, this.levelFiles.length - visibleCount);
+            const topIndex = Math.max(0, Math.min(this.scrollOffset || 0, maxScroll));
             const endIndex = Math.min(this.levelFiles.length, topIndex + visibleCount);
 
             for (let i = topIndex; i < endIndex; i++) {
                 const cy = startY + (i - topIndex) * gap;
                 const cx = w / 2;
-                if (this.isInsideRect(mx, my, cx - bw/2 - 10, cy - bh/2 - 5, bw + 20, bh + 10)) {
+                if (this.isInsideRect(mx, my, cx - bw/2 - 20, cy - bh/2 - 10, bw + 40, bh + 20)) {
                     this.selected = i;
                     this.playSelectedLevel();
                     return;
@@ -392,13 +477,13 @@ export class CanvasMenu {
         if (this.screenState === 'mods') {
             const startY = Math.floor(h * 0.25);
             const gap = 70;
-            const bw = Math.min(800, w - 80);
+            const bw = Math.min(800, w - 40);
             const bh = 56;
 
             for (let i = 0; i < this.mods.length; i++) {
                 const cy = startY + i * gap + bh / 2;
                 const cx = w / 2;
-                if (this.isInsideRect(mx, my, cx - bw/2, cy - bh/2, bw, bh)) {
+                if (this.isInsideRect(mx, my, cx - bw/2 - 20, cy - bh/2 - 10, bw + 40, bh + 20)) {
                     this.selected = i;
                     const targetMod = this.mods[i];
                     if (targetMod) {
@@ -419,6 +504,7 @@ export class CanvasMenu {
         if (index === 0) {
             this.screenState = 'levels';
             this.selected = 0;
+            this.scrollOffset = 0;
         } else if (index === 1 || index === 2) {
             // Open Editor / Edit Levels
             if (this.onOpenEditor) {
@@ -435,16 +521,19 @@ export class CanvasMenu {
     }
 
     async playSelectedLevel() {
+        if (this.isLoadingLevel) return;
         const file = this.levelFiles[this.selected];
         if (!file) return;
+        this.isLoadingLevel = true;
         this.audio.playSfx('perfect');
 
         try {
             const { LevelData } = await import('../game/level.js');
             const levelData = await LevelData.loadFromUrl(file.path);
             levelData.id = file.name;
-            this.onPlayLevel(levelData);
+            await this.onPlayLevel(levelData);
         } catch(err) {
+            this.isLoadingLevel = false;
             alert(`Ошибка загрузки уровня: ${err.message}`);
             this.screenState = 'levels';
         }
@@ -561,19 +650,19 @@ export class CanvasMenu {
         }
     }
 
-    drawButton(ctx, centerX, centerY, width, height, label, fontSize, hovered, selected) {
-        const pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.004);
+    drawButton(ctx, centerX, centerY, width, height, label, fontSize, hovered, selected, isLoading = false) {
+        const pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.006);
         const baseCol = 'rgb(36, 90, 160)';
-        const hlCol = 'rgb(40, 120, 200)';
-        const col = (hovered || selected) ? hlCol : baseCol;
+        const hlCol = isLoading ? `rgb(${Math.round(40 + 70*pulse)}, ${Math.round(140 + 70*pulse)}, 255)` : 'rgb(40, 120, 200)';
+        const col = (hovered || selected || isLoading) ? hlCol : baseCol;
         const x = centerX - width / 2;
         const y = centerY - height / 2;
 
         // Glow around button (menu.py lines 89-93)
-        if (hovered || selected) {
+        if (hovered || selected || isLoading) {
             ctx.save();
-            const glowAlpha = (70 * pulse + 30) / 255;
-            ctx.fillStyle = `rgba(120, 200, 255, ${glowAlpha.toFixed(2)})`;
+            const glowAlpha = isLoading ? (0.45 + 0.35 * pulse) : ((70 * pulse + 30) / 255);
+            ctx.fillStyle = isLoading ? `rgba(100, 220, 255, ${glowAlpha.toFixed(2)})` : `rgba(120, 200, 255, ${glowAlpha.toFixed(2)})`;
             this.roundRect(ctx, x - 8, y - 8, width + 16, height + 16, 18, true, false);
             ctx.restore();
         }
@@ -583,7 +672,7 @@ export class CanvasMenu {
         this.roundRect(ctx, x, y, width, height, 14, true, false);
 
         // Button text (menu.py line 95: (230,230,230))
-        ctx.fillStyle = 'rgb(230, 230, 230)';
+        ctx.fillStyle = isLoading ? '#ffffff' : 'rgb(230, 230, 230)';
         ctx.font = `${fontSize}px sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -608,7 +697,7 @@ export class CanvasMenu {
 
         const startY = 195;
         const gap = 82;
-        const bw = 380;
+        const bw = Math.min(380, w - 40);
         const bh = 58;
 
         let isAnyHovered = false;
@@ -643,21 +732,26 @@ export class CanvasMenu {
     }
 
     renderLevelsScreen(ctx, w, h, dt) {
+        // Back button in top-left
+        const isBackHover = this.isInsideRect(this.mouseX, this.mouseY, 20, 20, 130, 48);
+        this.drawButton(ctx, 85, 44, 120, 42, '← ' + this.t('back'), 22, isBackHover, false);
+
         ctx.fillStyle = 'rgb(230, 230, 230)';
-        ctx.font = '54px sans-serif';
+        ctx.font = '50px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('Select Level', w / 2, 105);
+        ctx.fillText('Select Level', w / 2, 95);
 
-        const startY = 190;
-        const gap = 58;
-        const bw = 520;
-        const bh = 48;
-        const visibleCount = Math.floor((h - startY - 80) / gap);
+        const startY = 160;
+        const gap = 56;
+        const bw = Math.min(540, w - 30);
+        const bh = 50;
+        const visibleCount = Math.floor((h - startY - 70) / gap);
 
-        let isAnyHovered = false;
+        let isAnyHovered = isBackHover;
 
-        const topIndex = Math.max(0, Math.min(this.selected - Math.floor(visibleCount / 2), this.levelFiles.length - visibleCount));
+        const maxScroll = Math.max(0, this.levelFiles.length - visibleCount);
+        const topIndex = Math.max(0, Math.min(this.scrollOffset || 0, maxScroll));
         const endIndex = Math.min(this.levelFiles.length, topIndex + visibleCount);
 
         for (let i = topIndex; i < endIndex; i++) {
@@ -672,14 +766,15 @@ export class CanvasMenu {
                 try { percent = Math.round(JSON.parse(hsSaved).accuracy); } catch(e) {}
             }
 
-            const label = `${file.name}  —  ${percent}%`;
-            const isHover = this.isInsideRect(this.mouseX, this.mouseY, cx - bw/2, cy - bh/2, bw, bh);
-            if (isHover) {
+            const isLoadingThis = this.isLoadingLevel && i === this.selected;
+            const label = isLoadingThis ? `⏳ Загрузка...` : `${file.name}  —  ${percent}%`;
+            const isHover = !this.isLoadingLevel && this.isInsideRect(this.mouseX, this.mouseY, cx - bw/2 - 10, cy - bh/2 - 5, bw + 20, bh + 10);
+            if (isHover && !this.isLoadingLevel) {
                 this.selected = i;
                 isAnyHovered = true;
             }
 
-            this.drawButton(ctx, cx, cy, bw, bh, label, 28, isHover, i === this.selected);
+            this.drawButton(ctx, cx, cy, bw, bh, label, 26, isHover || isLoadingThis, i === this.selected, isLoadingThis);
         }
 
         // Hint (menu.py line 512: center=(w//2, h-60))
@@ -693,11 +788,15 @@ export class CanvasMenu {
     }
 
     renderSettingsScreen(ctx, w, h, dt) {
+        // Back button in top-left
+        const isBackHover = this.isInsideRect(this.mouseX, this.mouseY, 20, 20, 130, 48);
+        this.drawButton(ctx, 85, 44, 120, 42, '← ' + this.t('back'), 22, isBackHover, false);
+
         ctx.fillStyle = 'rgb(230, 230, 230)';
-        ctx.font = '60px sans-serif';
+        ctx.font = '54px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(this.t('settings_title'), w / 2, Math.floor(h * 0.18));
+        ctx.fillText(this.t('settings_title'), w / 2, Math.floor(h * 0.16));
 
         const cats = [
             { name: 'Graphics', items: [
@@ -725,7 +824,7 @@ export class CanvasMenu {
             ]}
         ];
 
-        let isAnyHovered = false;
+        let isAnyHovered = isBackHover;
 
         // Sidebar categories (menu.py line 625: x=40, cat_start_y=int(h*0.30), sidebar_w=260, h=44, gap=56)
         const sidebarW = 260;
@@ -764,7 +863,7 @@ export class CanvasMenu {
         }
 
         // Hint (menu.py line 655: center=(w//2, h-60))
-        ctx.fillStyle = 'rgb(230, 230, 230)';
+        ctx.fillStyle = 'rgb(200, 210, 230)';
         ctx.font = '22px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -801,7 +900,7 @@ export class CanvasMenu {
     }
 
     handleSettingsClick(mx, my) {
-        const h = this.canvas.height;
+        const h = 720;
         const sidebarW = 260;
         const catStartY = Math.floor(h * 0.30);
         const catGap = 56;
@@ -862,18 +961,22 @@ export class CanvasMenu {
     }
 
     renderModsScreen(ctx, w, h, dt) {
+        // Back button in top-left
+        const isBackHover = this.isInsideRect(this.mouseX, this.mouseY, 20, 20, 130, 48);
+        this.drawButton(ctx, 85, 44, 120, 42, '← ' + this.t('back'), 22, isBackHover, false);
+
         ctx.fillStyle = 'rgb(230, 230, 230)';
-        ctx.font = '60px sans-serif';
+        ctx.font = '54px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('Управление модами', w / 2, Math.floor(h * 0.15));
 
         const startY = Math.floor(h * 0.25);
         const gap = 70;
-        const bw = Math.min(800, w - 80);
+        const bw = Math.min(800, w - 40);
         const bh = 56;
 
-        let isAnyHovered = false;
+        let isAnyHovered = isBackHover;
 
         for (let i = 0; i < this.mods.length; i++) {
             const mod = this.mods[i];

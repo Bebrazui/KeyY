@@ -120,6 +120,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function startEditor() {
+        canvasMenu.destroyInput();
         appMode = 'editor';
         lastFrameTime = performance.now();
         if (touchControls) touchControls.classList.add('hidden');
@@ -132,6 +133,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function returnToMenu() {
         editor.stopAudio();
+        canvasMenu.isLoadingLevel = false;
+        canvasMenu.initInput();
         startMenuLoop();
         canvasMenu.screenState = 'menu';
     }
@@ -142,18 +145,22 @@ window.addEventListener('DOMContentLoaded', () => {
     // 6. Start Game handler
     async function startGame(levelData) {
         currentLevelData = levelData;
-        stopCanvasLoop();
-        appMode = 'game';
-
-        if (touchControls) touchControls.classList.remove('hidden');
+        // Stop menu input immediately to prevent touches during gameplay or loading from triggering menu
+        canvasMenu.destroyInput();
 
         try {
             if (levelData.audio) {
                 await audio.loadMusic(levelData.audio);
             }
+            stopCanvasLoop();
+            appMode = 'game';
+
+            if (touchControls) touchControls.classList.remove('hidden');
             engine.start(levelData);
         } catch(err) {
             alert(`Ошибка загрузки аудио трека: ${err.message}`);
+            canvasMenu.isLoadingLevel = false;
+            canvasMenu.initInput();
             startMenuLoop();
             canvasMenu.screenState = 'levels';
         }
@@ -165,6 +172,8 @@ window.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Escape' || (e.key === 'Enter' && engine.state && engine.state.failed)) {
                 engine.stop();
                 if (touchControls) touchControls.classList.add('hidden');
+                canvasMenu.isLoadingLevel = false;
+                canvasMenu.initInput();
                 startMenuLoop();
                 canvasMenu.screenState = 'levels';
             }
@@ -231,6 +240,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-results-menu')?.addEventListener('click', () => {
         resultsScreen.classList.add('hidden');
+        canvasMenu.isLoadingLevel = false;
+        canvasMenu.initInput();
         startMenuLoop();
         canvasMenu.screenState = 'levels';
     });
@@ -243,6 +254,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-gameover-menu')?.addEventListener('click', () => {
         gameoverScreen.classList.add('hidden');
+        canvasMenu.isLoadingLevel = false;
+        canvasMenu.initInput();
         startMenuLoop();
         canvasMenu.screenState = 'levels';
     });
