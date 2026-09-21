@@ -291,13 +291,35 @@ export class GameRenderer {
                 ctx.stroke();
                 ctx.restore();
             }
-        }
+    }
+
+    getTouchZoneSetting() {
+        try {
+            const saved = localStorage.getItem('keyy_full_settings');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (parsed?.graphics?.touch_zones) return parsed.graphics.touch_zones;
+            }
+        } catch(e) {}
+        return 'auto';
     }
 
     renderFullScreenTouchZones(ctx, state, nowMs, w, h, scale, offsetX, offsetY) {
         if (!state || state.failed) return;
         // Do not display touch zone highlights during 3-2-1 countdown
         if (state.countdown > 0) return;
+
+        // On desktop PC with keyboard/mouse, do NOT render touch zone divisions unless explicitly turned on
+        const tzSetting = this.getTouchZoneSetting();
+        if (tzSetting === 'off') return;
+        if (tzSetting === 'auto') {
+            const isCoarseTouch = typeof window !== 'undefined' && (
+                window.matchMedia('(pointer: coarse)').matches ||
+                ('ontouchstart' in window && window.innerWidth <= 1024)
+            );
+            const touchModeActive = isCoarseTouch || !!state.hasTouchInput;
+            if (!touchModeActive) return;
+        }
 
         const hasDiagonals = state.level?.notes?.some(n => 
             ['top_left', 'top_right', 'bottom_left', 'bottom_right'].includes(n.side)

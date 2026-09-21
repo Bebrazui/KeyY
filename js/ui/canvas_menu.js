@@ -28,6 +28,7 @@ export const I18N = {
         'music_volume': 'Music Volume',
         'sfx_volume': 'SFX Volume',
         'fullscreen': 'Fullscreen',
+        'touch_zones': 'Touch Zones',
         'hint_settings': 'UP/DOWN select, LEFT/RIGHT change, ENTER/ESC save & back (Hint: disable Effects if laggy)',
         'hint_menu': 'UP/DOWN or MOUSE to select, ENTER/CLICK to activate, ESC to quit',
         'hint_levels': 'UP/DOWN to select, ENTER/CLICK to play, ESC to back',
@@ -52,6 +53,7 @@ export const I18N = {
         'linger': 'Время в центре (мс)',
         'language': 'Язык',
         'parallax_circles': 'Параллакс круги',
+        'touch_zones': 'Сенсорные зоны',
         'layered_hitsounds': 'Слоистые звуки',
         'pitch_shift_combo': 'Высота по комбо',
         'lowpass_on_bad': 'Приглушение при промахе',
@@ -206,7 +208,8 @@ export class CanvasMenu {
                 effects_enabled: true,
                 effects_mode: 'full',
                 fullscreen: true,
-                parallax_circles: true
+                parallax_circles: true,
+                touch_zones: 'auto'
             },
             timing: {
                 visible_lead_ms: 1200,
@@ -804,7 +807,8 @@ export class CanvasMenu {
                 { name: this.t('effects_enabled'), choices: ['True', 'False'], path: ['graphics', 'effects_enabled'] },
                 { name: this.t('effects_mode'), choices: ['off', 'light', 'full'], path: ['graphics', 'effects_mode'] },
                 { name: this.t('fullscreen'), choices: ['True', 'False'], path: ['graphics', 'fullscreen'] },
-                { name: this.t('parallax_circles'), choices: ['True', 'False'], path: ['graphics', 'parallax_circles'] }
+                { name: this.t('parallax_circles'), choices: ['True', 'False'], path: ['graphics', 'parallax_circles'] },
+                { name: this.t('touch_zones'), choices: ['auto', 'on', 'off'], path: ['graphics', 'touch_zones'] }
             ]},
             { name: 'Timing', items: [
                 { name: this.t('visible_lead'), choices: [], path: ['timing', 'visible_lead_ms'] },
@@ -880,7 +884,7 @@ export class CanvasMenu {
             return;
         }
 
-        const counts = [5, 4, 5, 1];
+        const counts = [6, 4, 5, 1];
 
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'KeyA' || e.key === 'ф' || e.key === 'Ф') {
             this.modifySettingValue(-1);
@@ -924,7 +928,7 @@ export class CanvasMenu {
         const s = this.settings;
 
         if (cat === 'graphics') {
-            const keys = ['quality', 'effects_enabled', 'effects_mode', 'fullscreen', 'parallax_circles'];
+            const keys = ['quality', 'effects_enabled', 'effects_mode', 'fullscreen', 'parallax_circles', 'touch_zones'];
             const k = keys[this.settingsIdx];
             if (typeof s.graphics[k] === 'boolean') {
                 s.graphics[k] = !s.graphics[k];
@@ -934,6 +938,9 @@ export class CanvasMenu {
             } else if (k === 'effects_mode') {
                 const em = ['off', 'light', 'full'];
                 s.graphics[k] = em[(em.indexOf(s.graphics[k]) + dir + 3) % 3];
+            } else if (k === 'touch_zones') {
+                const tz = ['auto', 'on', 'off'];
+                s.graphics[k] = tz[(tz.indexOf(s.graphics[k] || 'auto') + dir + 3) % 3];
             }
         } else if (cat === 'timing') {
             const keys = ['visible_lead_ms', 'linger_ms', 'hit_window_ms', 'difficulty'];

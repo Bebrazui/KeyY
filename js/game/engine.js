@@ -535,6 +535,10 @@ export class GameEngine {
             return;
         }
 
+        if (e.pointerType === 'touch') {
+            this.state.hasTouchInput = true;
+        }
+
         const { px, py, dx, dy } = this.getPointerData(e);
         const hasDiagonals = this.state.level?.notes?.some(n => 
             ['top_left', 'top_right', 'bottom_left', 'bottom_right'].includes(n.side)
