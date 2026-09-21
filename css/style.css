@@ -18,6 +18,9 @@
     padding: 0;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    outline: none !important;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -27,6 +30,9 @@ body, html {
     background-color: var(--bg-color);
     color: var(--text-primary);
     overflow: hidden;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
 }
 
 #app-container {
@@ -35,6 +41,8 @@ body, html {
     height: 100vh;
     overflow: hidden;
     background-color: #10121c;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent !important;
 }
 
 #game-canvas {
@@ -42,6 +50,9 @@ body, html {
     height: 100%;
     display: block;
     touch-action: none;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    outline: none !important;
 }
 
 /* Overlays */

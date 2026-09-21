@@ -130,6 +130,9 @@ export class CanvasMenu {
         this.boundOnMouseDown = this.onMouseDown.bind(this);
         this.boundOnWheel = this.onWheel.bind(this);
         this.boundOnPointerDown = (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            if (e.cancelable) e.preventDefault();
+            this.audio.init();
             const fakeE = {
                 button: 0,
                 clientX: e.clientX,
@@ -205,9 +208,14 @@ export class CanvasMenu {
 
     getCanvasPos(e) {
         const rect = this.canvas.getBoundingClientRect();
+        const clientX = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
+        const clientY = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
+        const px = (clientX - rect.left) * (this.canvas.width / rect.width);
+        const py = (clientY - rect.top) * (this.canvas.height / rect.height);
+        const scale = this.canvas.height / 720;
         return {
-            x: (e.clientX - rect.left) * (this.canvas.width / rect.width),
-            y: (e.clientY - rect.top) * (this.canvas.height / rect.height)
+            x: px / scale,
+            y: py / scale
         };
     }
 
@@ -306,14 +314,15 @@ export class CanvasMenu {
     }
 
     onMouseDown(e) {
-        if (e.button !== 0) return;
+        if (e.button !== undefined && e.button !== 0) return;
         this.audio.init();
 
+        const scale = this.canvas.height / 720;
+        const w = this.canvas.width / scale;
+        const h = 720;
         const pos = this.getCanvasPos(e);
         const mx = pos.x;
         const my = pos.y;
-        const w = this.canvas.width;
-        const h = this.canvas.height;
 
         // 1. Exit Dialog
         if (this.screenState === 'exit_dialog') {
@@ -333,10 +342,10 @@ export class CanvasMenu {
 
         // 2. Main Menu Click (exact button bounds)
         if (this.screenState === 'menu') {
-            const startY = Math.floor(h * 0.34);
-            const gap = 92;
-            const bw = 360;
-            const bh = 64;
+            const startY = 195;
+            const gap = 82;
+            const bw = 380;
+            const bh = 58;
 
             for (let i = 0; i < 5; i++) {
                 const cx = w / 2;
@@ -352,11 +361,11 @@ export class CanvasMenu {
 
         // 3. Level Select Click
         if (this.screenState === 'levels') {
-            const startY = Math.floor(h * 0.30);
-            const gap = 56;
+            const startY = 190;
+            const gap = 58;
             const bw = 520;
             const bh = 48;
-            const visibleCount = Math.floor((h - startY - 100) / gap);
+            const visibleCount = Math.floor((h - startY - 80) / gap);
 
             const topIndex = Math.max(0, Math.min(this.selected - Math.floor(visibleCount / 2), this.levelFiles.length - visibleCount));
             const endIndex = Math.min(this.levelFiles.length, topIndex + visibleCount);
@@ -445,9 +454,17 @@ export class CanvasMenu {
 
     render(dt) {
         const ctx = this.ctx;
-        const w = this.canvas.width;
-        const h = this.canvas.height;
+        const rawW = this.canvas.width;
+        const rawH = this.canvas.height;
         this.timeAcc += dt;
+
+        // Base design HD virtual height: 720
+        const vh = 720;
+        const scale = rawH / vh;
+        const vw = rawW / scale;
+
+        ctx.save();
+        ctx.scale(scale, scale);
 
         // FPS counter
         this.fpsCounter++;
@@ -459,24 +476,24 @@ export class CanvasMenu {
         }
 
         // 1. Exact Pygame draw_menu_background (game/menu.py lines 419-450)
-        this.drawMenuBackground(ctx, w, h, this.timeAcc);
+        this.drawMenuBackground(ctx, vw, vh, this.timeAcc);
 
         // 2. Active Screen Content
         let isCursorPointer = false;
 
         if (this.screenState === 'menu') {
-            isCursorPointer = this.renderMainMenu(ctx, w, h, dt);
+            isCursorPointer = this.renderMainMenu(ctx, vw, vh, dt);
         } else if (this.screenState === 'levels') {
-            isCursorPointer = this.renderLevelsScreen(ctx, w, h, dt);
+            isCursorPointer = this.renderLevelsScreen(ctx, vw, vh, dt);
         } else if (this.screenState === 'settings') {
-            isCursorPointer = this.renderSettingsScreen(ctx, w, h, dt);
+            isCursorPointer = this.renderSettingsScreen(ctx, vw, vh, dt);
         } else if (this.screenState === 'mods') {
-            isCursorPointer = this.renderModsScreen(ctx, w, h, dt);
+            isCursorPointer = this.renderModsScreen(ctx, vw, vh, dt);
         }
 
         // 3. Exit Confirmation Dialog (game/menu.py lines 115-170)
         if (this.screenState === 'exit_dialog') {
-            this.renderExitDialog(ctx, w, h);
+            this.renderExitDialog(ctx, vw, vh);
             isCursorPointer = true;
         }
 
@@ -488,14 +505,16 @@ export class CanvasMenu {
         ctx.font = '24px sans-serif';
         ctx.textAlign = 'right';
         ctx.textBaseline = 'top';
-        ctx.fillText(`FPS: ${this.fps}`, w - 15, 12);
+        ctx.fillText(`FPS: ${this.fps}`, vw - 15, 12);
 
         // 5. Smooth fade decay
         if (this.fadeAlpha > 0.01) {
             ctx.fillStyle = `rgba(0, 0, 0, ${this.fadeAlpha.toFixed(2)})`;
-            ctx.fillRect(0, 0, w, h);
+            ctx.fillRect(0, 0, vw, vh);
             this.fadeAlpha = Math.max(0, this.fadeAlpha - dt * 4);
         }
+
+        ctx.restore();
     }
 
     drawMenuBackground(ctx, w, h, t) {
@@ -574,10 +593,10 @@ export class CanvasMenu {
     renderMainMenu(ctx, w, h, dt) {
         // Title (menu.py line 241: title_font 60, center=(w//2, int(h*0.18)))
         ctx.fillStyle = 'rgb(230, 230, 230)';
-        ctx.font = '60px sans-serif';
+        ctx.font = '54px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(this.t('menu_title'), w / 2, Math.floor(h * 0.18));
+        ctx.fillText(this.t('menu_title'), w / 2, 105);
 
         const menuItems = [
             this.t('play_levels'),
@@ -587,15 +606,15 @@ export class CanvasMenu {
             this.t('mods')
         ];
 
-        const startY = Math.floor(h * 0.34);
-        const gap = 92;
-        const bw = 360;
-        const bh = 64;
+        const startY = 195;
+        const gap = 82;
+        const bw = 380;
+        const bh = 58;
 
         let isAnyHovered = false;
 
         for (let i = 0; i < menuItems.length; i++) {
-            const targetScale = (i === this.selected) ? 1.08 : 1.0;
+            const targetScale = (i === this.selected) ? 1.06 : 1.0;
             this.scales[i] += (targetScale - this.scales[i]) * Math.min(1.0, dt * 8);
             const scale = this.scales[i];
 
@@ -604,37 +623,37 @@ export class CanvasMenu {
             const cx = w / 2;
             const cy = startY + i * gap;
 
-            const isHover = this.isInsideRect(this.mouseX, this.mouseY, cx - curW/2, cy - curH/2, curW, curH);
+            const isHover = this.isInsideRect(this.mouseX, this.mouseY, cx - curW/2 - 10, cy - curH/2 - 5, curW + 20, curH + 10);
             if (isHover) {
                 this.selected = i;
                 isAnyHovered = true;
             }
 
-            this.drawButton(ctx, cx, cy, curW, curH, menuItems[i], 36, isHover, i === this.selected);
+            this.drawButton(ctx, cx, cy, curW, curH, menuItems[i], Math.round(30 * scale), isHover, i === this.selected);
         }
 
         // Hint (menu.py line 260: hint_font 24, center=(w//2, h-60))
-        ctx.fillStyle = 'rgb(230, 230, 230)';
-        ctx.font = '24px sans-serif';
+        ctx.fillStyle = 'rgb(200, 210, 230)';
+        ctx.font = '20px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(this.t('hint_menu'), w / 2, h - 60);
+        ctx.fillText(this.t('hint_menu'), w / 2, h - 35);
 
         return isAnyHovered;
     }
 
     renderLevelsScreen(ctx, w, h, dt) {
         ctx.fillStyle = 'rgb(230, 230, 230)';
-        ctx.font = '60px sans-serif';
+        ctx.font = '54px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('Select Level', w / 2, Math.floor(h * 0.18));
+        ctx.fillText('Select Level', w / 2, 105);
 
-        const startY = Math.floor(h * 0.30);
-        const gap = 56;
+        const startY = 190;
+        const gap = 58;
         const bw = 520;
         const bh = 48;
-        const visibleCount = Math.floor((h - startY - 100) / gap);
+        const visibleCount = Math.floor((h - startY - 80) / gap);
 
         let isAnyHovered = false;
 
@@ -660,15 +679,15 @@ export class CanvasMenu {
                 isAnyHovered = true;
             }
 
-            this.drawButton(ctx, cx, cy, bw, bh, label, 30, isHover, i === this.selected);
+            this.drawButton(ctx, cx, cy, bw, bh, label, 28, isHover, i === this.selected);
         }
 
         // Hint (menu.py line 512: center=(w//2, h-60))
-        ctx.fillStyle = 'rgb(230, 230, 230)';
-        ctx.font = '24px sans-serif';
+        ctx.fillStyle = 'rgb(200, 210, 230)';
+        ctx.font = '20px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(this.t('hint_levels'), w / 2, h - 60);
+        ctx.fillText(this.t('hint_levels'), w / 2, h - 35);
 
         return isAnyHovered;
     }
