@@ -9,7 +9,7 @@ export class RainbowMod {
         this.name = 'Радужные ноты';
         this.version = '1.0';
         this.desc = 'Переливание цветов дорожек';
-        this.enabled = true; // Enabled by default
+        this.enabled = false; // Disabled by default
     }
 
     getColor(side, nowMs) {

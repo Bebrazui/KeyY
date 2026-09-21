@@ -225,3 +225,36 @@ h1.game-title {
 #touch-bottom { left: 100px; bottom: 15px; border-color: var(--neon-pink); }
 #touch-top    { right: 100px; bottom: 65px; border-color: var(--neon-green); }
 #touch-right  { right: 20px; bottom: 40px; border-color: var(--neon-orange); }
+
+.fullscreen-btn {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    background: rgba(22, 28, 44, 0.82);
+    border: 1.5px solid rgba(120, 200, 255, 0.35);
+    border-radius: 10px;
+    color: #e6f0ff;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    transition: background 0.15s, transform 0.1s, border-color 0.15s;
+}
+
+.fullscreen-btn:hover {
+    background: rgba(36, 50, 80, 0.95);
+    border-color: rgba(120, 200, 255, 0.7);
+}
+
+.fullscreen-btn:active {
+    transform: scale(0.92);
+    background: rgba(40, 70, 115, 0.95);
+}

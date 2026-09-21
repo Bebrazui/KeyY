@@ -50,7 +50,34 @@ window.addEventListener('DOMContentLoaded', () => {
         renderer.resize();
     }
     window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', () => {
+        setTimeout(handleResize, 150);
+    });
     handleResize();
+
+    // Fullscreen toggle handler
+    const fsBtn = document.getElementById('fullscreen-btn');
+    if (fsBtn) {
+        fsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!document.fullscreenElement) {
+                const root = document.documentElement;
+                if (root.requestFullscreen) root.requestFullscreen().catch(() => {});
+                else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            }
+        });
+
+        const updateFsIcon = () => {
+            fsBtn.textContent = document.fullscreenElement ? '✕' : '⛶';
+            handleResize();
+        };
+        document.addEventListener('fullscreenchange', updateFsIcon);
+        document.addEventListener('webkitfullscreenchange', updateFsIcon);
+    }
 
     // 4. Preload SFX in background
     audio.preloadSfx({

@@ -84,6 +84,12 @@ export function colorWithAlpha(color, alpha) {
             return `rgba(${parts[0]}, ${parts[1]}, ${parts[2]}, ${alpha})`;
         });
     }
+    if (color.startsWith('hsl')) {
+        return color.replace(/hsla?\(([^)]+)\)/, (m, val) => {
+            const parts = val.split(',').map(s => s.trim());
+            return `hsla(${parts[0]}, ${parts[1]}, ${parts[2]}, ${alpha})`;
+        });
+    }
     return color;
 }
 
@@ -128,8 +134,10 @@ export class GameRenderer {
     }
 
     resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+        this.dpr = dpr;
+        this.canvas.width = Math.round(window.innerWidth * dpr);
+        this.canvas.height = Math.round(window.innerHeight * dpr);
     }
 
     getNoteColor(side, nowMs) {
@@ -182,9 +190,6 @@ export class GameRenderer {
         // 2. Guide lines, Track Glow & Beat Glow
         this.renderTracks(sctx, state, nowMs);
 
-        // 2.5. Mobile Touch Zones with Soft Incoming Note Glow
-        this.renderTouchZones(sctx, state, nowMs);
-
         // 3. Center Target Ring
         this.renderCenter(sctx, state, nowMs);
 
@@ -214,7 +219,7 @@ export class GameRenderer {
         // 10. Blit scene to main canvas with scaling and post-processing effects
         const w = this.canvas.width;
         const h = this.canvas.height;
-        const scale = Math.min(w / VIRTUAL_SIZE, h / VIRTUAL_SIZE, 1.2);
+        const scale = Math.min(w / VIRTUAL_SIZE, h / VIRTUAL_SIZE);
         const offsetX = (w - VIRTUAL_SIZE * scale) / 2;
         const offsetY = (h - VIRTUAL_SIZE * scale) / 2;
 
@@ -222,6 +227,9 @@ export class GameRenderer {
         this.ctx.fillRect(0, 0, w, h);
 
         this.renderPostProcessing(this.ctx, state, scale, offsetX, offsetY);
+
+        // 10.5. Fullscreen Touch Zones across the entire mobile screen
+        this.renderFullScreenTouchZones(this.ctx, state, nowMs, w, h, scale, offsetX, offsetY);
 
         // 11. HUD / UI Elements (Score, Combo, HP, Progress, Mod badges)
         this.renderHUD(this.ctx, state, nowMs, scale, offsetX, offsetY);
@@ -286,12 +294,20 @@ export class GameRenderer {
         }
     }
 
-    renderTouchZones(ctx, state, nowMs) {
+    renderFullScreenTouchZones(ctx, state, nowMs, w, h, scale, offsetX, offsetY) {
         if (!state || state.failed) return;
+        // Do not display touch zone highlights during 3-2-1 countdown
+        if (state.countdown > 0) return;
+
         const hasDiagonals = state.level?.notes?.some(n => 
             ['top_left', 'top_right', 'bottom_left', 'bottom_right'].includes(n.side)
         );
         const sectors = hasDiagonals ? SIDES_8 : SIDES_4;
+
+        const cx = w / 2;
+        const cy = h / 2;
+        const maxRadius = Math.hypot(cx, cy) + 60;
+        const centerR = CENTER_RADIUS * scale;
 
         for (let i = 0; i < sectors.length; i++) {
             const sector = sectors[i];
@@ -319,48 +335,54 @@ export class GameRenderer {
 
             const isHeld = (state.trackGlow[side] > 0.05) || (state.heldTouchSides && state.heldTouchSides.has(side));
 
-            // Draw radial sector cone
             ctx.save();
+
+            // 1. Dividing border lines extending from center ring across whole display
+            ctx.strokeStyle = isHeld || maxProx > 0.3 ? colorWithAlpha(col, 0.35) : 'rgba(255, 255, 255, 0.07)';
+            ctx.lineWidth = Math.max(1, Math.round(1.5 * this.dpr));
             ctx.beginPath();
-            ctx.arc(CENTER, CENTER, 440, sector.startAngle, sector.endAngle);
-            ctx.arc(CENTER, CENTER, CENTER_RADIUS + 8, sector.endAngle, sector.startAngle, true);
-            ctx.closePath();
-
-            // Soft glow highlight - responds smoothly to note proximity and player touch
-            const baseAlpha = isHeld ? 0.32 : (maxProx > 0 ? (0.04 + 0.22 * Math.pow(maxProx, 1.3)) : 0.015);
-            const grad = ctx.createRadialGradient(CENTER, CENTER, CENTER_RADIUS + 8, CENTER, CENTER, 440);
-            grad.addColorStop(0, colorWithAlpha(col, baseAlpha * 1.5));
-            grad.addColorStop(0.55, colorWithAlpha(col, baseAlpha));
-            grad.addColorStop(1, colorWithAlpha(col, 0.01));
-            ctx.fillStyle = grad;
-            ctx.fill();
-
-            // Dividing border lines
-            ctx.strokeStyle = isHeld || maxProx > 0.35 ? colorWithAlpha(col, 0.35) : 'rgba(255, 255, 255, 0.06)';
-            ctx.lineWidth = isHeld ? 2 : 1;
+            ctx.moveTo(cx + Math.cos(sector.startAngle) * (centerR + 10), cy + Math.sin(sector.startAngle) * (centerR + 10));
+            ctx.lineTo(cx + Math.cos(sector.startAngle) * maxRadius, cy + Math.sin(sector.startAngle) * maxRadius);
             ctx.stroke();
 
-            // Subtle zone key label
-            const labelR = 305;
-            const lx = CENTER + Math.cos(sector.angle) * labelR;
-            const ly = CENTER + Math.sin(sector.angle) * labelR;
+            // 2. Soft semi-transparent illumination (ONLY when approaching or held by thumb)
+            if (maxProx > 0 || isHeld) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, maxRadius, sector.startAngle, sector.endAngle);
+                ctx.arc(cx, cy, centerR + 8, sector.endAngle, sector.startAngle, true);
+                ctx.closePath();
 
-            ctx.font = `bold 22px ${this.fontFamily}`;
+                const baseAlpha = isHeld ? 0.28 : (0.03 + 0.18 * Math.pow(maxProx, 1.4));
+                const grad = ctx.createRadialGradient(cx, cy, centerR + 8, cx, cy, maxRadius * 0.75);
+                grad.addColorStop(0, colorWithAlpha(col, baseAlpha * 1.3));
+                grad.addColorStop(0.5, colorWithAlpha(col, baseAlpha * 0.7));
+                grad.addColorStop(1, colorWithAlpha(col, 0.0));
+                ctx.fillStyle = grad;
+                ctx.fill();
+            }
+
+            // 3. Subtle zone key label at comfortable thumb rest distance
+            const labelDist = Math.min(w, h) * 0.38;
+            const lx = cx + Math.cos(sector.angle) * labelDist;
+            const ly = cy + Math.sin(sector.angle) * labelDist;
+
+            const fontSize = Math.round(26 * this.dpr);
+            ctx.font = `bold ${fontSize}px ${this.fontFamily}`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
             if (isHeld) {
                 ctx.fillStyle = col;
                 ctx.shadowColor = col;
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 12 * this.dpr;
                 ctx.globalAlpha = 1.0;
             } else if (maxProx > 0) {
                 ctx.fillStyle = col;
                 ctx.shadowColor = col;
-                ctx.shadowBlur = 8 * maxProx;
-                ctx.globalAlpha = 0.35 + 0.65 * maxProx;
+                ctx.shadowBlur = 8 * maxProx * this.dpr;
+                ctx.globalAlpha = 0.4 + 0.6 * maxProx;
             } else {
-                ctx.fillStyle = 'rgba(200, 220, 245, 0.22)';
+                ctx.fillStyle = 'rgba(200, 220, 245, 0.25)';
                 ctx.shadowBlur = 0;
                 ctx.globalAlpha = 1.0;
             }

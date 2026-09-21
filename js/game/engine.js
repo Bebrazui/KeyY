@@ -484,38 +484,31 @@ export class GameEngine {
         }
     }
 
-    getVirtualCoords(e) {
+    getPointerData(e) {
         const canvas = this.renderer.canvas;
         const rect = canvas.getBoundingClientRect();
-        const px = e.clientX - rect.left;
-        const py = e.clientY - rect.top;
-        const w = canvas.width;
-        const h = canvas.height;
-        const scale = Math.min(w / VIRTUAL_SIZE, h / VIRTUAL_SIZE, 1.2);
-        const offsetX = (w - VIRTUAL_SIZE * scale) / 2;
-        const offsetY = (h - VIRTUAL_SIZE * scale) / 2;
-        const vx = (px - offsetX) / scale;
-        const vy = (py - offsetY) / scale;
-        return { vx, vy };
+        const px = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const py = (e.clientY - rect.top) * (canvas.height / rect.height);
+        const dx = px - canvas.width / 2;
+        const dy = py - canvas.height / 2;
+        return { px, py, dx, dy };
     }
 
-    getSideFromVirtualCoords(vx, vy, hasDiagonals) {
-        const dx = vx - CENTER;
-        const dy = vy - CENTER;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 35) return null; // Inside center ring
+    getSideFromDelta(dx, dy, hasDiagonals) {
+        const centerR = 35 * (this.renderer.dpr || 1);
+        if (Math.hypot(dx, dy) < centerR) return null; // Inside center ring
 
         const theta = Math.atan2(dy, dx); // [-PI, PI]
         const a = theta < 0 ? theta + Math.PI * 2 : theta; // [0, 2*PI)
 
         if (!hasDiagonals) {
-            // 4 sectors
+            // 4 sectors spanning entire screen
             if (a >= Math.PI * 7/4 || a < Math.PI / 4) return 'right';
             if (a >= Math.PI / 4 && a < Math.PI * 3/4) return 'bottom';
             if (a >= Math.PI * 3/4 && a < Math.PI * 5/4) return 'left';
             return 'top';
         } else {
-            // 8 sectors
+            // 8 sectors spanning entire screen
             if (a >= Math.PI * 15/8 || a < Math.PI / 8) return 'right';
             if (a >= Math.PI / 8 && a < Math.PI * 3/8) return 'bottom_right';
             if (a >= Math.PI * 3/8 && a < Math.PI * 5/8) return 'bottom';
@@ -542,17 +535,17 @@ export class GameEngine {
             return;
         }
 
-        const { vx, vy } = this.getVirtualCoords(e);
+        const { px, py, dx, dy } = this.getPointerData(e);
         const hasDiagonals = this.state.level?.notes?.some(n => 
             ['top_left', 'top_right', 'bottom_left', 'bottom_right'].includes(n.side)
         );
-        const side = this.getSideFromVirtualCoords(vx, vy, hasDiagonals);
+        const side = this.getSideFromDelta(dx, dy, hasDiagonals);
         if (!side) return;
 
         this.activePointers.set(e.pointerId, {
             side,
-            startX: vx,
-            startY: vy,
+            startX: px,
+            startY: py,
             startTime: performance.now()
         });
 
@@ -571,17 +564,17 @@ export class GameEngine {
         const pt = this.activePointers.get(e.pointerId);
         if (!pt) return;
 
-        const { vx, vy } = this.getVirtualCoords(e);
+        const { px, py } = this.getPointerData(e);
 
         // Slide swipe gesture detection
         if (this.state.pendingSlideTarget) {
-            const dx = vx - pt.startX;
-            const dy = vy - pt.startY;
-            if (Math.hypot(dx, dy) > 28) {
+            const swipeDx = px - pt.startX;
+            const swipeDy = py - pt.startY;
+            if (Math.hypot(swipeDx, swipeDy) > 28 * (this.renderer.dpr || 1)) {
                 const hasDiagonals = this.state.level?.notes?.some(n => 
                     ['top_left', 'top_right', 'bottom_left', 'bottom_right'].includes(n.side)
                 );
-                const swipeSide = this.getSideFromVirtualCoords(vx, vy, hasDiagonals);
+                const swipeSide = this.getSideFromDelta(swipeDx, swipeDy, hasDiagonals);
                 if (swipeSide === this.state.pendingSlideTarget) {
                     const nowMs = this.audio.getCurrentSongTimeMs();
                     this.processHit(swipeSide, nowMs);
