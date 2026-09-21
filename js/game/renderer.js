@@ -291,6 +291,7 @@ export class GameRenderer {
                 ctx.stroke();
                 ctx.restore();
             }
+        }
     }
 
     getTouchZoneSetting() {
