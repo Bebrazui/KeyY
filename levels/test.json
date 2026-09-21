@@ -1,0 +1,473 @@
+{
+  "title": "test",
+  "artist": "You",
+  "audio": "assets\\sample.mp3",
+  "approach_ms": 1000,
+  "hit_window_ms": 120,
+  "notes": [
+    {
+      "time_ms": 860,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 1103,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 1370,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 1642,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 1794,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 1909,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 2198,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 2466,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 2718,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 2985,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 3229,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 3496,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 3750,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 3888,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 4028,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 4284,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 4560,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 4825,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 5104,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 5358,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 5641,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 811
+    },
+    {
+      "time_ms": 5814,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 6170,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 6699,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 810
+    },
+    {
+      "time_ms": 6864,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 7234,
+      "side": "bottom",
+      "key": "G",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 7234,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 7733,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 858
+    },
+    {
+      "time_ms": 7894,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 8248,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 8793,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 795
+    },
+    {
+      "time_ms": 8946,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 9321,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 9818,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 830
+    },
+    {
+      "time_ms": 10017,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 10339,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 10892,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 801
+    },
+    {
+      "time_ms": 11080,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 11438,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 11969,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 882
+    },
+    {
+      "time_ms": 12167,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 12555,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 13107,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 828
+    },
+    {
+      "time_ms": 13283,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 13668,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 14269,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 14522,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 14775,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 15033,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 15137,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 15299,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 15392,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 15532,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 15659,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 15805,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 16046,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 16313,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 16588,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 16854,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 17119,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 17243,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 17367,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 17494,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 17610,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 17737,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 17863,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 18163,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 18451,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 18724,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 19004,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 19266,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 19368,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 19493,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 19631,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 19735,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 19862,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 600
+    },
+    {
+      "time_ms": 19988,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 600
+    }
+  ],
+  "effects": [],
+  "events": []
+}

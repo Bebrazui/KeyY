@@ -1,0 +1,80 @@
+{
+  "graphics": {
+    "quality": "high",
+    "effects_enabled": true,
+    "effects_mode": "full",
+    "fullscreen": true,
+    "parallax_circles": false
+  },
+  "timing": {
+    "linger_ms": 200,
+    "visible_lead_ms": 1200,
+    "hit_window_ms": 120,
+    "difficulty": "normal"
+  },
+  "audio": {
+    "music_volume": 0.8,
+    "sfx_volume": 0.9,
+    "layered_hitsounds": true,
+    "pitch_shift_combo": true,
+    "lowpass_on_bad": true
+  },
+  "ui": {
+    "language": "ru"
+  },
+  "gameplay": {
+    "slide_follow_ms": 160,
+    "slide_bonus_score": 150
+  },
+  "progress": {
+    "highscores": {
+      "Custom": {
+        "score": 21456,
+        "combo": 33,
+        "accuracy": 0.8666666666666667,
+        "difficulty": "normal"
+      },
+      "Easy": {
+        "score": 604,
+        "combo": 4,
+        "accuracy": 1.0,
+        "difficulty": "normal"
+      },
+      "Hard": {
+        "score": 1716,
+        "combo": 8,
+        "accuracy": 1.0,
+        "difficulty": "normal"
+      },
+      "Medium": {
+        "score": 1406,
+        "combo": 5,
+        "accuracy": 0.8571428571428571,
+        "difficulty": "normal"
+      },
+      "Official Long Easy": {
+        "score": 904,
+        "combo": 4,
+        "accuracy": 1.0,
+        "difficulty": "normal"
+      },
+      "Official Long Hard": {
+        "score": 502,
+        "combo": 3,
+        "accuracy": 0.75,
+        "difficulty": "normal"
+      },
+      "Sample": {
+        "score": 1004,
+        "combo": 4,
+        "accuracy": 1.0,
+        "difficulty": "normal"
+      }
+    },
+    "achievements": [
+      "combo_50",
+      "accuracy_95",
+      "perfect_80"
+    ]
+  }
+}

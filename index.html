@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KeyY</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Fullscreen Canvas for 1:1 Pygame Rendering -->
+        <canvas id="game-canvas"></canvas>
+
+        <!-- Results Screen Overlay -->
+        <div id="results-screen" class="screen hidden">
+            <h2 style="font-size: 2rem; margin-bottom: 8px;">ТРЕК ЗАВЕРШЕН</h2>
+            <div class="results-card">
+                <div id="res-rank" class="rank-badge rank-s">S</div>
+                <div style="font-size: 2.4rem; font-weight: 900; margin-bottom: 12px;" id="res-score">0000000</div>
+                <div class="results-stats-grid">
+                    <div class="stat-item">Точность: <span id="res-accuracy" class="stat-val">100%</span></div>
+                    <div class="stat-item">Макс Комбо: <span id="res-combo" class="stat-val">0x</span></div>
+                    <div class="stat-item" style="color: var(--neon-green)">Perfect: <span id="res-perfect" class="stat-val">0</span></div>
+                    <div class="stat-item" style="color: var(--neon-blue)">Great: <span id="res-great" class="stat-val">0</span></div>
+                    <div class="stat-item" style="color: var(--neon-orange)">Good: <span id="res-good" class="stat-val">0</span></div>
+                    <div class="stat-item" style="color: var(--neon-red)">Miss: <span id="res-miss" class="stat-val">0</span></div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 14px;">
+                <button id="btn-results-retry" class="btn btn-primary">ЗАНОВО</button>
+                <button id="btn-results-menu" class="btn btn-secondary">В МЕНЮ</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen Overlay -->
+        <div id="gameover-screen" class="screen hidden">
+            <h1 style="color: var(--neon-red); font-size: 3.5rem; font-weight: 900; margin-bottom: 10px;">ПРОВАЛ</h1>
+            <div class="game-subtitle">Закончились очки здоровья</div>
+            <div class="results-card">
+                <div style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 6px;">Счет</div>
+                <div style="font-size: 2.2rem; font-weight: 900;" id="go-score">0000000</div>
+                <div style="font-size: 1rem; color: var(--text-secondary); margin-top: 10px;">Комбо: <span id="go-combo">0x</span></div>
+            </div>
+            <div style="display: flex; gap: 14px;">
+                <button id="btn-gameover-retry" class="btn btn-primary">ЗАНОВО</button>
+                <button id="btn-gameover-menu" class="btn btn-secondary">В МЕНЮ</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

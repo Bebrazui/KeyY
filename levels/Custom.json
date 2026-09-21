@@ -1,0 +1,452 @@
+{
+  "title": "Custom",
+  "artist": "You",
+  "audio": "assets\\sample.mp3",
+  "approach_ms": 1000,
+  "hit_window_ms": 120,
+  "notes": [
+    {
+      "time_ms": 2955,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 1297,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 4184,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 989,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 5485,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 1284,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 6686,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 1361,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 7947,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 1416,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 9247,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 1072,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 10535,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 249,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 10817,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 288,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 11122,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 149,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 11483,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 164,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 11811,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 444,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 12139,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 362,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 12485,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 12766,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 13063,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 1123,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 13368,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 13735,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 14071,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 14336,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 985,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 14353,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 14685,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 14984,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 15590,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 1132,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 15590,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 15935,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 16219,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 16574,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 16853,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 16870,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 1160,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 17176,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 17500,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 17795,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 18129,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 1126,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 18129,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 18483,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 18784,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 19089,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 19422,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 641,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 19422,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 19728,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 19997,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 20242,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 0,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 20322,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 150,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 20472,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 184,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 20623,
+      "side": "left",
+      "key": "F",
+      "duration_ms": 744,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 21335,
+      "side": "right",
+      "key": "H",
+      "duration_ms": 361,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 21614,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 496,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 21794,
+      "side": "bottom",
+      "key": "G",
+      "duration_ms": 960,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    },
+    {
+      "time_ms": 22335,
+      "side": "left",
+      "key": "J",
+      "duration_ms": 799,
+      "is_fake": false,
+      "note_type": "tap",
+      "slide_target": null
+    }
+  ],
+  "effects": [],
+  "events": []
+}

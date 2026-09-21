@@ -1,0 +1,13 @@
+{
+  "name": "Ускоритель",
+  "version": "1.0",
+  "description": "Изменяет скорость игры. Нажмите + для ускорения, - для замедления.",
+  "author": "Пример",
+  "enabled": false,
+  "settings": {
+    "speed_multiplier": 0.8,
+    "min_speed": 0.5,
+    "max_speed": 2.0,
+    "speed_step": 0.1
+  }
+}

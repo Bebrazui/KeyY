@@ -1,0 +1,65 @@
+{
+  "autopilot": {
+    "name": "Автопилот",
+    "version": "1.0",
+    "description": "Автоматически играет за вас. Нажмите ] для включения/выключения в игре.",
+    "author": "Система",
+    "enabled": true,
+    "file_path": "mods\\autopilot.mod",
+    "mod_type": "file"
+  },
+  "example_mod": {
+    "name": "Пример мода",
+    "version": "1.0",
+    "description": "Демонстрационный мод для показа возможностей системы",
+    "author": "Разработчик",
+    "enabled": true,
+    "file_path": "mods\\example_mod",
+    "mod_type": "folder"
+  },
+  "rainbow_notes": {
+    "name": "Радужные ноты",
+    "version": "1.0",
+    "description": "Делает ноты разноцветными и переливающимися",
+    "author": "Пример",
+    "enabled": true,
+    "file_path": "mods\\rainbow_notes.mod",
+    "mod_type": "file"
+  },
+  "speed_mod": {
+    "name": "Ускоритель",
+    "version": "1.0",
+    "description": "Изменяет скорость игры. Нажмите + для ускорения, - для замедления.",
+    "author": "Пример",
+    "enabled": true,
+    "file_path": "mods\\speed_mod",
+    "mod_type": "folder"
+  },
+  "cheats_mod": {
+    "name": "Читы",
+    "version": "1.0",
+    "description": "Панель читов для игры. Нажмите Tab для открытия/закрытия меню читов.",
+    "author": "Система",
+    "enabled": true,
+    "file_path": "mods\\cheats_mod",
+    "mod_type": "folder"
+  },
+  "debug_info": {
+    "name": "Отладочная информация",
+    "version": "1.0",
+    "description": "Показывает дополнительную информацию на экране. Нажмите F1 для переключения.",
+    "author": "Система",
+    "enabled": true,
+    "file_path": "mods\\debug_info.mod",
+    "mod_type": "file"
+  },
+  "autopilot_mod": {
+    "name": "Автопилот",
+    "version": "1.0",
+    "description": "Автоматически играет за вас. Нажмите ] для включения/выключения везде.",
+    "author": "Система",
+    "enabled": true,
+    "file_path": "mods\\autopilot_mod",
+    "mod_type": "folder"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "title": "Custom",
+  "artist": "You",
+  "audio": "assets\\song_bfb5ffe7.mp3",
+  "approach_ms": 1000,
+  "hit_window_ms": 120,
+  "notes": [
+    {
+      "time_ms": 1995,
+      "side": "top",
+      "key": "W",
+      "duration_ms": 0,
+      "is_fake": false
+    },
+    {
+      "time_ms": 3697,
+      "side": "top_right",
+      "key": "E",
+      "duration_ms": 0,
+      "is_fake": false
+    },
+    {
+      "time_ms": 4607,
+      "side": "right",
+      "key": "L",
+      "duration_ms": 131,
+      "is_fake": false
+    },
+    {
+      "time_ms": 5493,
+      "side": "bottom_right",
+      "key": "C",
+      "duration_ms": 0,
+      "is_fake": false
+    },
+    {
+      "time_ms": 7119,
+      "side": "right",
+      "key": "O",
+      "duration_ms": 0,
+      "is_fake": false
+    },
+    {
+      "time_ms": 8077,
+      "side": "right",
+      "key": "M",
+      "duration_ms": 0,
+      "is_fake": false
+    },
+    {
+      "time_ms": 8994,
+      "side": "top_right",
+      "key": "E",
+      "duration_ms": 0,
+      "is_fake": false
+    }
+  ],
+  "effects": [],
+  "events": []
+}

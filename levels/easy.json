@@ -1,0 +1,13 @@
+{
+  "title": "Easy",
+  "artist": "Built-in",
+  "audio": "assets/sample.mp3",
+  "approach_ms": 1000,
+  "hit_window_ms": 140,
+  "notes": [
+    { "time_ms": 1500, "side": "left", "key": "A" },
+    { "time_ms": 2500, "side": "top", "key": "W" },
+    { "time_ms": 3500, "side": "right", "key": "D" },
+    { "time_ms": 4500, "side": "bottom", "key": "S" }
+  ]
+}

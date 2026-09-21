@@ -1,0 +1,57 @@
+{
+  "title": "Hard",
+  "artist": "Built-in",
+  "audio": "assets/sample.mp3",
+  "approach_ms": 800,
+  "hit_window_ms": 100,
+  "notes": [
+    {
+      "time_ms": 800,
+      "side": "left",
+      "key": "A",
+      "duration_ms": 0
+    },
+    {
+      "time_ms": 1100,
+      "side": "top",
+      "key": "W",
+      "duration_ms": 0
+    },
+    {
+      "time_ms": 1400,
+      "side": "right",
+      "key": "D",
+      "duration_ms": 0
+    },
+    {
+      "time_ms": 1700,
+      "side": "bottom",
+      "key": "S",
+      "duration_ms": 0
+    },
+    {
+      "time_ms": 2000,
+      "side": "left",
+      "key": "A",
+      "duration_ms": 0
+    },
+    {
+      "time_ms": 2200,
+      "side": "top",
+      "key": "W",
+      "duration_ms": 0
+    },
+    {
+      "time_ms": 2400,
+      "side": "right",
+      "key": "D",
+      "duration_ms": 0
+    },
+    {
+      "time_ms": 2600,
+      "side": "bottom",
+      "key": "S",
+      "duration_ms": 0
+    }
+  ]
+}

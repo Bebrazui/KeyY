@@ -1,0 +1,20 @@
+{
+  "title": "Official Long Easy",
+  "artist": "Built-in",
+  "audio": "assets/sample.mp3",
+  "approach_ms": 1000,
+  "hit_window_ms": 140,
+  "effects": ["glow_boost"],
+  "events": [
+    {"time_ms": 5000, "type": "zoom", "value": 1.1},
+    {"time_ms": 10000, "type": "rotate", "value": 10},
+    {"time_ms": 15000, "type": "effect_on", "name": "vignette"},
+    {"time_ms": 25000, "type": "effect_off", "name": "vignette"}
+  ],
+  "notes": [
+    { "time_ms": 1500, "side": "left", "key": "A" },
+    { "time_ms": 2000, "side": "top", "key": "W" },
+    { "time_ms": 2500, "side": "right", "key": "D" },
+    { "time_ms": 3000, "side": "bottom", "key": "S" }
+  ]
+}

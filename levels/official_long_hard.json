@@ -1,0 +1,23 @@
+{
+  "title": "Official Long Hard",
+  "artist": "Built-in",
+  "audio": "assets/sample.mp3",
+  "approach_ms": 850,
+  "hit_window_ms": 100,
+  "effects": ["glow_boost", "contrast"],
+  "events": [
+    {"time_ms": 3000, "type": "zoom", "value": 1.1},
+    {"time_ms": 6000, "type": "zoom", "value": 1.0},
+    {"time_ms": 9000, "type": "rotate", "value": -8},
+    {"time_ms": 12000, "type": "rotate", "value": 0},
+    {"time_ms": 15000, "type": "effect_on", "name": "vignette"},
+    {"time_ms": 22000, "type": "effect_on", "name": "chroma_shift"},
+    {"time_ms": 30000, "type": "effect_off", "name": "chroma_shift"}
+  ],
+  "notes": [
+    {"time_ms": 1000, "side": "left", "key": "A"},
+    {"time_ms": 1200, "side": "top", "key": "W"},
+    {"time_ms": 1400, "side": "right", "key": "D"},
+    {"time_ms": 1600, "side": "bottom", "key": "S"}
+  ]
+}

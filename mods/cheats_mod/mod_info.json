@@ -1,0 +1,30 @@
+{
+  "name": "Читы",
+  "version": "1.2",
+  "description": "Панель читов для игры. Нажмите Tab для открытия/закрытия меню читов.",
+  "author": "Система",
+  "enabled": true,
+  "settings": {
+    "menu_open": false,
+    "speed_slider": 1.0,
+    "score_multiplier": 1.0,
+    "god_mode": false,
+    "no_fail": true,
+    "infinite_hp": true,
+    "perfect_accuracy": true,
+    "auto_hit": false,
+    "combo_freeze": true,
+    "no_combo_break_on_miss": false,
+    "wide_window": false,
+    "ultra_window": false,
+    "hold_assist": false,
+    "hp_regen": false,
+    "chill_fx": false,
+    "mute_miss": false,
+    "mute_all_sfx": true,
+    "no_lowpass": true,
+    "no_shake": false,
+    "auto_retry_on_fail": true,
+    "no_flash": false
+  }
+}
